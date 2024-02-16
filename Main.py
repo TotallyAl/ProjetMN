@@ -8,3 +8,6 @@ def f(x: float) -> float:
 
 solution: list = bissection(f, -5, 10, 0.00001)
 print(solution)
+
+
+# Changement
