@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 from RechercheRacine import (
-    secante_iterative,
+    secante,
     secante_recursive,
     bissection_recursive,
-    bissection_iterative,
+    bissection,
 )
+
+import numpy as np
+import math
 
 
 def f(x: float) -> float:
-    return x**3 - 6 * x + 17
+    return 3 * x**3 - 4 * x - 17
 
 
 solution: float
 statut: int
-print(bissection_recursive(f, -4, 3, 0.01))
-print(bissection_iterative(f, -4, 3, 0.01))
-
-print(secante_recursive(f, -4, 3, 0.01))
-print(secante_iterative(f, -4, 3, 0.01))
+print(bissection(f, -3, 4, 0.01))
+print(secante(f, -3, 4, 0.01))
