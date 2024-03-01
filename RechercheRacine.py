@@ -3,6 +3,7 @@ import numpy as np
 
 class Config:
     max_iter: int = 1000
+    error: int = 0.0000000000001
 
 
 """
@@ -62,7 +63,7 @@ def secante(f, x0: float, x1: float, tol: float) -> list:
 
         # On veut savoir si f(x0) == f(x1), avec le probleme d'arrondi des ordinateurs, nous ne pouvons pas utiliser le == de comparaison.
         # Nous devons donc soustraire f(x0) et f(x1) et regarder si la différence est plus petite qu'un marge d'erreur. Ici nous utilisons la tolérance (tol)
-        if np.abs(f0 - f1) < tol:
+        if np.abs(f0 - f1) < Config.error:
             print(
                 "f0 et f1 sont trop proches. La méthode de la sécante n'est pas un algorithme adapté pour cette fonction."
             )
