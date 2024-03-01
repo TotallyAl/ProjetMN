@@ -1,7 +1,9 @@
-from typing import Callable
 import numpy as np
 
-from Config import RRConfig
+
+class Config:
+    max_iter: int = 1000
+
 
 """
 Les méthodes récursives ne sont seront pas utilisés car elle ont quelques désavantages dans le cadre du projet:
@@ -13,9 +15,7 @@ Mêmes si la récursion peut être plus rapide dans certains cas ou qu'elle soit
 """
 
 
-def secante_recursive(
-    f: Callable[[float], float], x0: float, x1: float, tol: float
-) -> list:
+def secante_recursive(f, x0: float, x1: float, tol: float) -> list:
     if tol < 0:
         return [0, -1]
     if f(x0) == f(x1):
@@ -27,9 +27,7 @@ def secante_recursive(
     return secante_recursive(f, x1, x2, tol)
 
 
-def bissection_recursive(
-    f: Callable[[float], float], x0: float, x1: float, tol: float
-) -> list:
+def bissection_recursive(f, x0: float, x1: float, tol: float) -> list:
     if f(x0) * f(x1) > 0:
         print("f(x0) et f(x1) sont de meme signes")
         return [0, -1]
@@ -49,16 +47,17 @@ Méthode plus directe qui ne consomme pas spécialement beaucoup de mémoire.
 """
 
 
-def secante(f: Callable[[float], float], x0: float, x1: float, tol: float) -> list:
+def secante(f, x0: float, x1: float, tol: float) -> list:
     if tol < 0:
-        raise ValueError("La tolérance est négative.")
+        tol = np.abs(tol)
 
     if x0 == x1:
-        raise ValueError("x0 et x1 sont égaux. Intervalle nul.")
+        print("x0 et x1 sont égaux. Intervalle nul.")
+        return [0, 1]
 
     f0 = f(x0)
     iter = 0
-    while iter <= RRConfig.max_iter:
+    while iter <= Config.max_iter:
         f1 = f(x1)
 
         # On veut savoir si f(x0) == f(x1), avec le probleme d'arrondi des ordinateurs, nous ne pouvons pas utiliser le == de comparaison.
@@ -83,14 +82,14 @@ def secante(f: Callable[[float], float], x0: float, x1: float, tol: float) -> li
         f0 = f1
         x1 = x2
     print(
-        f"Nous avons atteint la limite maximum d'itérations({RRConfig.max_iter}), la méthode n'a pas convergé."
+        f"Nous avons atteint la limite maximum d'itérations({Config.max_iter}), la méthode n'a pas convergé."
     )
     return [0, -1]
 
 
-def bissection(f: Callable[[float], float], x0: float, x1: float, tol: float) -> list:
+def bissection(f, x0: float, x1: float, tol: float) -> list:
     if tol < 0:
-        raise ValueError("La tolérance est négative.")
+        tol = np.abs(tol)
 
     if x0 == x1:
         print("x0 et x1 sont égaux. L'intervalle est nul.")
