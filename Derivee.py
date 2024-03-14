@@ -28,7 +28,7 @@ def h_w(Re_p: float) -> float:
         raise ValueError("Re_p is not in the right range")
 
 
-def odefunction(z: float, C: list) -> list:
+def odefunction(z: float, C: list) -> np.array:
 
     C_CH4, C_H2O, C_H2, C_CO, C_CO2, X, T, P = C
 
@@ -52,7 +52,8 @@ def odefunction(z: float, C: list) -> list:
     X_u: float = k_c * b
 
     # Calculons r_CBN
-    r_CBN: float = (k_c / Constantes.M_CaO) * ((1 - X / X_u) ** 2)
+    # r_CBN: float = (k_c / Constantes.M_CaO) * ((1 - X / X_u) ** 2)
+    r_CBN: float = (k_c / Constantes.M_CaO) * pow((1 - X / X_u), 2)
     """Le taux de concentration de CO2 par carbonatation en (kmol * kg^-1 * s^-1)"""
 
     # Les pressions partielles des composés dans C en (Pa)
@@ -172,13 +173,15 @@ def odefunction(z: float, C: list) -> list:
 
     # C = (C_CH4, C_H20, C_H2, C_CO, C_CO2, X, T, P)
 
-    return [
-        dCi_dz(r_CH4, r_CBN),
-        dCi_dz(r_H2O, r_CBN),
-        dCi_dz(r_H2, r_CBN),
-        dCi_dz(r_CO, r_CBN),
-        dCi_dz(r_CO2, r_CBN),
-        dX_dz,
-        dT_dz,
-        dP_dz,
-    ]
+    return np.array(
+        [
+            dCi_dz(r_CH4, r_CBN),
+            dCi_dz(r_H2O, r_CBN),
+            dCi_dz(r_H2, r_CBN),
+            dCi_dz(r_CO, r_CBN),
+            dCi_dz(r_CO2, r_CBN),
+            dX_dz,
+            dT_dz,
+            dP_dz,
+        ]
+    )
