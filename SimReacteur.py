@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from Derivee import odefunction
 
@@ -22,12 +21,22 @@ def calculConcentrationsIVP(interval: list, C0: list) -> list:
 
 
 def calculConcentrationsEuler(interval: list, C0: list) -> list:
+    """
+    # Méthode d'Euler
+
+    ### Explication de la méthode d'Euler
+    ### Paramètres a prendre en compte
+    ### Exemple d'utilisation
+    """
     n = 1000000  # 1 million iterations
     z = np.linspace(interval[0], interval[1], n)
     """Cette liste contient les valeurs de z qui seront utilisés pour calculer les concentrations."""
     C = np.zeros((8, n))
+    """Cette matrice contiendra les concentrations des composés à chaque itération."""
     C[:, 0] = C0
+    """On initialise la première colonne de la matrice C avec les concentrations initiales."""
     h: float = z[1] - z[0]
+    """On calcule le pas une fois car il est constant. Cela permet d\'économiser du temps car nous ne devons pas le calculer à chaque itération."""
     for i in range(n - 1):
         C[:, i + 1] = C[:, i] + h * (odefunction(z[i], C[:, i]))
 
