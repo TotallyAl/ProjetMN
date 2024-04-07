@@ -14,7 +14,7 @@ class Constantes:
     """Constante en m"""
 
     D_R: float = 2.4 * 10 ** (-2)
-    """Constante en m"""
+    """Diamètre intérieure du réacteur en (m)"""
 
     k_g: float = 2.59 * 10 ** (-4)
     """Conductivités thermiques du gaz constituant le lit catalytique dans le réacteur en kJ/(m*s*K)"""
@@ -59,7 +59,7 @@ class Constantes:
     """Masse volumique du catalyseur en (kg/m^3)"""
 
     eta: float = 0.3
-    """Constante (adimensionnelle)"""
+    """Efficacité du catalyseur (adimensionnelle)"""
 
     M_k: float = 303
     """Constante (adimensionnelle)"""
@@ -100,7 +100,7 @@ class Constantes:
     k0_z: float = k_g * (
         epsilon + (1 - epsilon) / (0.139 * epsilon - 0.0339 + 2 / 3 * (k_g / k_s))
     )
-    """Constante"""
+    """Conductivité thermique effective du systeme poreux (adimensionnelle)"""
 
     t_w: float = 700 + 273.15
     """Temperature t_w en (K)"""

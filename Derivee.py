@@ -28,7 +28,7 @@ def h_w(Re_p: float) -> float:
         raise ValueError("Re_p is not in the right range")
 
 
-def odefunction(z: float, C: list, captage: bool) -> np.array:
+def odefunction(z: float, C: list, captage: bool = True) -> np.array:
 
     C_CH4, C_H2O, C_H2, C_CO, C_CO2, X, T, P = C
 
@@ -47,16 +47,22 @@ def odefunction(z: float, C: list, captage: bool) -> np.array:
 
     # Calculons k_c(T) et b(T)
     k_c: float = Constantes.M_k * np.exp(Constantes.N_k / T)
+    """Vitesse apparente de la carbonatation en (m * s^-1)"""
     b: float = Constantes.M_b * np.exp(Constantes.N_b / T)
+    """Temps pris pour arriver a la moitié de la conversion ultime X_u en (s)"""
     X_u: float = k_c * b
-
+    """Conversion fractionnaire ultime (admensionnelle)"""
     # Calculons r_CBN
-    r_CBN: float = 0
-    if captage == False:
-        r_CBN: float = (k_c / Constantes.M_CaO) * pow((1 - X / X_u), 2)
+    if captage == True:
+        c = 1
+    else:
+        c = 0
+    r_CBN: float = (k_c / Constantes.M_CaO) * pow((1 - X / X_u), 2) * c
     """Le taux de concentration de CO2 par carbonatation en (kmol * kg^-1 * s^-1)"""
 
-    # Les pressions partielles des composés dans C en (Pa)
+    """
+    Calcule des pressions partielles grace a la loi de Dalton: P_i = P_tot * (C_i / C_tot)
+    """
     C_TOT = C_CH4 + C_H2O + C_H2 + C_CO + C_CO2
     P_CH4 = P * C_CH4 / C_TOT
     P_H2O = P * C_H2O / C_TOT
@@ -75,7 +81,10 @@ def odefunction(z: float, C: list, captage: bool) -> np.array:
     K2: float = K1 * K3
     """Constante d'équilibre de la réaction R2 en (bar^2)"""
 
-    # Calculons les K_i
+    """
+    Calcule des K_j: Les constantes d'adsorption des composés CH4, H2O, H2, CO et CO2 en (bar^-1)
+    Elles sont données par les relations d'Arrhenius suivantes:
+    """
     K_CH4: float = 0.179 * np.exp(((38280 / Constantes.R) * ((1 / T) - (1 / 823))))
     K_H2O: float = 0.4152 * np.exp(((-88680 / Constantes.R) * ((1 / T) - (1 / 823))))
     K_H2: float = 0.0296 * np.exp(((82900 / Constantes.R) * ((1 / T) - (1 / 648))))
@@ -125,6 +134,7 @@ def odefunction(z: float, C: list, captage: bool) -> np.array:
     rho_s: float = (Constantes.W_cat + Constantes.W_CaO) / (
         Constantes.W_cat / Constantes.rho_cat + Constantes.W_CaO / Constantes.rho_CaO
     )
+    """Masse volumique moyenne en (kg/m^3) des deux solides au sein du réacteur"""
 
     rho_g: float = (100 / (Constantes.R * T)) * (
         Constantes.M_CH4 * P_CH4
@@ -133,6 +143,7 @@ def odefunction(z: float, C: list, captage: bool) -> np.array:
         + Constantes.M_CO * P_CO
         + Constantes.M_CO2 * P_CO2
     )
+    """Masse volumique de la phase gazeuse en (kg/m^3)"""
 
     Re_p: float = (
         Constantes.u_g * Constantes.epsilon * rho_g * Constantes.d_p
